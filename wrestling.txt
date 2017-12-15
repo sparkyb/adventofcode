@@ -1,0 +1,13 @@
+ae bc di fj gh
+
+1  ai|bh|cf|dg ej
+2  bj|ch|ef|gi ad
+3  ag|dj|eh|fi bc
+4  ab|ce|df|ij gh
+
+5  ac|bd|eg|hi fj
+6  bf|ci|dh|gj ae
+7  ad|ei|fg|hj bc
+8  aj|be|cg|fh di
+9  ah|bg|cd|ej fi
+10 af|bi|cj|de gh
