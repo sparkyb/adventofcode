@@ -21,34 +21,6 @@ def resolve(registers, arg):
     else:
         return int(arg)
 
-def part1(lines):
-    registers = defaultdict(int)
-    i = 0
-    snd = None
-    while i < len(lines):
-        line = lines[i]
-        op = line[0]
-        args = line[1:]
-        if op == 'set':
-            registers[args[0]] = resolve(registers,args[1])
-        elif op == 'add':
-            registers[args[0]] = registers[args[0]]+resolve(registers,args[1])
-        elif op == 'mul':
-            registers[args[0]] = registers[args[0]]*resolve(registers,args[1])
-        elif op == 'mod':
-            registers[args[0]] = registers[args[0]]%resolve(registers,args[1])
-        elif op == 'jgz':
-            if resolve(registers,args[0]) > 0:
-                i = max(i+resolve(registers,args[1]),0)
-                continue
-        elif op == 'snd':
-            snd = resolve(registers,args[0])
-        elif op == 'rcv':
-            if resolve(registers,args[0]) != 0:
-                return snd
-        i += 1
-# end part1
-
 def executeasm(lines, defaults=None):
     registers = defaultdict(int)
     if defaults:
@@ -81,6 +53,10 @@ def executeasm(lines, defaults=None):
             registers[args[0]] = inqueue.pop(0)
         i += 1
 # end executeasm
+
+def part1(input):
+    return executeasm(input).next()[-1]
+# end part1
 
 def part2(input):
     prog0 = executeasm(input, {'p':0})
