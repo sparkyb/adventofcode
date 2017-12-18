@@ -54,7 +54,8 @@ def executeasm(lines, defaults=None):
     if defaults:
         registers.update(defaults)
     i = 0
-    snd = []
+    inqueue = []
+    outqueue = []
     while i < len(lines):
         line = lines[i]
         op = line[0]
@@ -72,46 +73,30 @@ def executeasm(lines, defaults=None):
                 i = max(i+resolve(registers,args[1]),0)
                 continue
         elif op == 'snd':
-            val = yield resolve(registers,args[0])
-            if val is not None:
-                snd.append(val)
+            outqueue.append(resolve(registers,args[0]))
         elif op == 'rcv':
-            if snd:
-                registers[args[0]] = snd.pop(0)
-            else:
-                val = yield None
-                while val is None:
-                    val = yield None
-                registers[args[0]] = val
+            while not inqueue:
+                inqueue = yield outqueue
+                outqueue = []
+            registers[args[0]] = inqueue.pop(0)
         i += 1
 # end executeasm
 
 def part2(input):
     prog0 = executeasm(input, {'p':0})
     prog1 = executeasm(input, {'p':1})
-    prog0q = [None]
-    prog1q = [None]
-    prog0locked = False
-    prog1locked = False
+    prog0q = prog0.next()
+    prog1q = prog1.next()
     count = 0
-    while not prog0locked or not prog0locked or prog0q or prog1q:
-        while prog1q or not prog0locked:
-            val = prog0.send(prog1q.pop(0) if prog1q else None)
-            #print 'prog0 yielded %s' % val
-            if val is not None:
-                prog0locked = False
-                prog0q.append(val)
-            else:
-                prog0locked = True
-        while prog0q or not prog1locked:
-            val = prog1.send(prog0q.pop(0) if prog0q else None)
-            #print 'prog1 yielded %s' % val
-            if val is not None:
-                prog1locked = False
-                prog1q.append(val)
-                count += 1
-            else:
-                prog1locked = True
+    while prog0q or prog1q:
+        if prog1q:
+            prog0q.extend(prog0.send(prog1q))
+            prog1q = []
+        if prog0q:
+            vals = prog1.send(prog0q)
+            count += len(vals)
+            prog1q.extend(vals)
+            prog0q = []
     return count
 # end part2
 
