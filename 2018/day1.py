@@ -12,14 +12,23 @@ def get_input(filename=None):
   with open(filename) as fp:
     input = fp.read().strip()
 
-  return input.split('\n')
+  return map(int,input.split('\n'))
 
 
 def part1(input):
-  return None
+  return sum(input)
 
 def part2(input):
-  return None
+  freq = 0
+  freqs = set([freq])
+  i = 0
+  while True:
+    freq += input[i % len(input)]
+    i += 1
+    if freq in freqs:
+      return freq
+    else:
+      freqs.add(freq)
 
 
 if __name__ == '__main__':
