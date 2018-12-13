@@ -10,7 +10,7 @@ def get_input(filename=None):
   if not filename:
     filename = os.path.splitext(os.path.basename(__file__))[0]+'.txt'
   with open(filename) as fp:
-    input = fp.read().strip()
+    input = fp.read().rstrip()
 
   return input.split('\n')
 
