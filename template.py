@@ -4,6 +4,8 @@ import math
 from collections import defaultdict
 import itertools
 import md5
+import msvcrt
+import sys
 
 
 def get_input(filename=None):
