@@ -49,8 +49,11 @@ def executeasm(ip, instructions, registers = None):
     registers = defaultdict(int)
   while registers[ip] >= 0 and registers[ip] < len(instructions):
     instruction = instructions[registers[ip]]
+    ## print '%d: %s\t%r' %(registers[ip], ' '.join(map(str,instruction)), [registers[i] for i in xrange(6)])
     opcode = OPCODES[instruction[0]]
     registers[instruction[3]] = opcode['op'](opcode['a'](registers,instruction[1]),opcode['b'](registers,instruction[2]))
+    ## if instruction[3] == 0:
+      ## print '%d: %s\t%d\t%d' %(registers[ip], ' '.join(map(str,instruction)), registers[0], registers[4])
     registers[ip] += 1
   return registers[0]
 
@@ -65,12 +68,48 @@ def decompiled(registers = None):
     registers[3] = (27 * 28 + 29) * 30 * 14 * 32
     registers[4] += registers[3]
 
+  registers[1] = registers[4]  # for optimized assembly, with negatives
   for registers[2] in xrange(1, registers[4] + 1):
+    ## print registers[2]
+
+    # original assembly
     ## for registers[1] in xrange(1, registers[4] + 1):
       ## if registers[2] * registers[1] == registers[4]:
         ## registers[0] += registers[2]
+
+    # optimized
+    registers[3] = registers[2] * registers[2]
+    if registers[3] >= registers[4]:
+      if registers[3] == registers[4]:
+        registers[0] += registers[2]
+      break
+
+    # without negatives
+    ## registers[1] = registers[2] + 1
+    ## while registers[1] <= registers[4]:
+      ## registers[3] = registers[2] * registers[1]
+      ## if registers[3] >= registers[4]:
+        ## if registers[3] == registers[4]:
+          ## registers[0] += registers[2]
+          ## registers[0] += registers[1]
+        ## break
+      ## registers[1] += 1
+    # with negatives
+    ## while registers[1] > registers[2]:
+      ## registers[3] = registers[2] * registers[1]
+      ## if registers[3] <= registers[4]:
+        ## if registers[3] == registers[4]:
+          ## registers[0] += registers[2]
+          ## registers[0] += registers[1]
+        ## else:
+          ## registers[1] += 1
+        ## break
+      ## registers[1] -= 1
+
+    # optimized python (not possible in assembly)
     if registers[4] % registers[2] == 0:
       registers[0] += registers[2]
+      registers[0] += registers[4] // registers[2]
   return registers[0]
 
 def part1(input):
@@ -88,6 +127,9 @@ def part2(input):
 
 
 if __name__ == '__main__':
-  input = get_input()
+  from optparse import OptionParser
+  parser = OptionParser(usage='%prog [options] [<input.txt>]')
+  options, args = parser.parse_args()
+  input = get_input(*args)
   print part1(input)
   print part2(input)

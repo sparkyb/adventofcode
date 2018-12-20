@@ -25,6 +25,9 @@ def part2(input):
 
 
 if __name__ == '__main__':
-  input = get_input()
+  from optparse import OptionParser
+  parser = OptionParser(usage='%prog [options] [<input.txt>]')
+  options, args = parser.parse_args()
+  input = get_input(*args)
   print part1(input)
   print part2(input)
