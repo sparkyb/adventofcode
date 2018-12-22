@@ -13,6 +13,7 @@ Examples
   * [2017/day23](2017/day23.py)
   * [2018/day16](2018/day16.py)
   * [2018/day19](2018/day19.py)
+  * [2018/day21](2018/day21.py)
 - A*
   * [2015/day19](2015/day19.py)
   * [2015/day22](2015/day22.py)
@@ -20,6 +21,7 @@ Examples
   * [2016/day17](2016/day17.py)
   * [2016/day22](2016/day22.py)
   * [2016/day24](2016/day24.py)
+  * [2018/day22](2018/day22.py)
 - BFS
   * [2016/day24](2016/day24.py)
 - Union/Find
