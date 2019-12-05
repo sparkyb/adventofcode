@@ -3,7 +3,7 @@ import itertools
 import math
 from hashlib import md5
 import msvcrt
-import numpy as np
+#import numpy as np
 import os.path
 import re
 import sys
@@ -20,6 +20,7 @@ def get_input(filename=None):
 
 def part1(input):
   return None
+
 
 def part2(input):
   return None

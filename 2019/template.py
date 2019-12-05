@@ -3,7 +3,7 @@ import itertools
 import math
 from hashlib import md5
 import msvcrt
-import numpy as np
+#import numpy as np
 import os.path
 import re
 import sys
@@ -17,26 +17,16 @@ def get_input(filename=None):
   with open(filename) as fp:
     input = fp.read().rstrip()
 
-  return list(map(int,input.split(',')))
+  #return list(map(int, input.split(',')))
+  return input.split('\n')
 
 
 def part1(input):
-  prog = Intcode(input)
-  prog[1] = 12
-  prog[2] = 2
-  prog.run()
-  return prog[0]
+  return None
 
 
 def part2(input):
-  for noun in range(100):
-    for verb in range(100):
-        prog = Intcode(input)
-        prog[1] = noun
-        prog[2] = verb
-        prog.run()
-        if prog[0] == 19690720:
-          return 100 * noun + verb
+  return None
 
 
 if __name__ == '__main__':

@@ -17,26 +17,21 @@ def get_input(filename=None):
   with open(filename) as fp:
     input = fp.read().rstrip()
 
-  return list(map(int,input.split(',')))
+  return list(map(int, input.split(',')))
 
 
 def part1(input):
-  prog = Intcode(input)
-  prog[1] = 12
-  prog[2] = 2
+  prog = Intcode(input, [1])
   prog.run()
-  return prog[0]
+  print(prog.output)
+  return prog.output[-1]
 
 
 def part2(input):
-  for noun in range(100):
-    for verb in range(100):
-        prog = Intcode(input)
-        prog[1] = noun
-        prog[2] = verb
-        prog.run()
-        if prog[0] == 19690720:
-          return 100 * noun + verb
+  prog = Intcode(input, [5])
+  prog.run()
+  print(prog.output)
+  return prog.output[-1]
 
 
 if __name__ == '__main__':
