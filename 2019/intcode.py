@@ -26,20 +26,25 @@ class ParamMode(IntEnum):
   IMMEDIATE = 1
 
 
+class NeedsInput(Exception):
+  pass
+
+
 class Intcode(list):
   def __init__(self, program, input=()):
     super().__init__(program)
     self.ip = 0
     self.input = list(input)
     self.output = []
+    self.halted = False
 
   def _param(self, param, mode=ParamMode.POSITION):
     if mode == ParamMode.POSITION:
       param = self[param]
     return param
 
-  def run(self):
-    while True:
+  def run(self, return_output=False):
+    while not self.halted:
       opcode = self[self.ip]
       param_modes = opcode // 100
       opcode %= 100
@@ -70,9 +75,15 @@ class Intcode(list):
         b = self._param(params[1], modes[1])
         self[params[2]] = a * b
       elif opcode == Opcode.IN:
+        if not self.input:
+          self.ip -= 2  # rewind instruction pointer to re-run this opcode when we get input
+          raise NeedsInput()
         self[params[0]] = self.input.pop(0)
       elif opcode == Opcode.OUT:
-        self.output.append(self._param(params[0], modes[0]))
+        output = self._param(params[0], modes[0])
+        self.output.append(output)
+        if return_output:
+          return output
       elif opcode == Opcode.JNZ:
         cond = self._param(params[0], modes[0])
         dest = self._param(params[1], modes[1])
@@ -92,4 +103,5 @@ class Intcode(list):
         b = self._param(params[1], modes[1])
         self[params[2]] = 1 if a == b else 0
       elif opcode == Opcode.HALT:
-        return
+        self.halted = True
+    return None
