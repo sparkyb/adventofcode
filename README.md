@@ -14,9 +14,10 @@ Examples
   * [2018/day16](2018/day16.py)
   * [2018/day19](2018/day19.py)
   * [2018/day21](2018/day21.py)
-  * [2019/day2](2019/day2.py)
-  * [2019/day5](2019/day5.py)
-  * [2019/day7](2019/day7.py)
+  * [2019/day2](2019/day2.py) (intcode)
+  * [2019/day5](2019/day5.py) (intcode)
+  * [2019/day7](2019/day7.py) (intcode)
+  * [2019/day9](2019/day9.py) (intcode)
 - A*
   * [2015/day19](2015/day19.py)
   * [2015/day22](2015/day22.py)
