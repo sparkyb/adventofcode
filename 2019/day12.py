@@ -40,25 +40,15 @@ def part2(input):
   cycles = []
   for axis, positions in enumerate(axes):
     velocities = np.zeros_like(positions)
-    prev_states = set()
-    ordered_states = []
-    step = 0
-    while True:
-      state = tuple(np.concatenate((positions, velocities)))
-      if state in prev_states:
-        offset = ordered_states.index(state)
-        print('{} cycles in {} steps, offset {}'.format('XYZ'[axis],
-                                                        step - offset,
-                                                        offset))
-        max_offset = max(max_offset, offset)
-        cycles.append(step - offset)
-        break
-      else:
-        prev_states.add(state)
-        ordered_states.append(state)
+    initial_state = tuple(np.concatenate((positions, velocities)))
+    step = 1
+    do_step(positions, velocities)
+    while tuple(np.concatenate((positions, velocities))) != initial_state:
       do_step(positions, velocities)
       step += 1
-  return max_offset + np.lcm.reduce(cycles, dtype='i8')
+    print('{} cycles in {} steps'.format('XYZ'[axis], step))
+    cycles.append(step)
+  return np.lcm.reduce(cycles, dtype='i8')
 
 
 if __name__ == '__main__':
