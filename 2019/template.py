@@ -1,4 +1,6 @@
 from collections import defaultdict
+import enum
+import functools
 import itertools
 import math
 from hashlib import md5
