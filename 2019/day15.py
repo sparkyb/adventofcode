@@ -146,11 +146,21 @@ class Maze:
     for dir in self.path.path_to(path):
       self.move(dir)
 
-  def explore(self, depth_first=False):
-    while self.liberties:
+  def explore(self, depth_first=True, stop_at_oxygen=False):
+    while self.liberties and (not stop_at_oxygen or self.oxygen is None):
       target = sorted(self.liberties, key=lambda pos: len(self.liberties[pos]),
                       reverse=depth_first)[0]
       self.goto(self.liberties.pop(target))
+
+  def wall_follow(self, stop_at_oxygen=False):
+    dir = Direction.NORTH
+    while not stop_at_oxygen or self.oxygen is None:
+      for try_dir in [dir.left, dir, dir.right, dir.reverse]:
+        if self.move(try_dir):
+          if not self.path:
+            return
+          dir = try_dir
+          break
 
   def draw_map(self):
     min_y = min(pos[0] for pos in self.cells)
@@ -166,17 +176,20 @@ class Maze:
 
 def part1(input):
   maze = Maze(input)
-  maze.explore(True)
+  maze.explore(depth_first=True, stop_at_oxygen=True)
+  ## maze.wall_follow(stop_at_oxygen=True)
   maze.draw_map()
   return len(maze.paths[maze.oxygen])
 
 
 def part2(input):
   maze = Maze(input)
-  maze.explore(True)
-  maze.goto(maze.oxygen)
+  maze.explore(depth_first=True, stop_at_oxygen=True)
+  ## maze.wall_follow(stop_at_oxygen=True)
+  ## maze.goto(maze.oxygen)
   maze.reset()
-  maze.explore(True)
+  maze.explore(depth_first=True, stop_at_oxygen=False)
+  ## maze.wall_follow(stop_at_oxygen=False)
   return max(len(path) for path in maze.paths.values())
 
 
