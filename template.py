@@ -1,12 +1,15 @@
 from collections import defaultdict
+import enum
+import functools
 import itertools
 import math
-from hashlib import md5
 import msvcrt
-#import numpy as np
 import os.path
+import pdb
 import re
 import sys
+
+#import numpy as np
 
 
 def get_input(filename=None):
