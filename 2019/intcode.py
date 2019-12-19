@@ -40,8 +40,17 @@ class NeedsInput(Exception):
 class Intcode(list):
   def __init__(self, program, input=()):
     super().__init__(program)
+    self.orig_program = program
     self.ip = 0
     self.input = list(input)
+    self.output = []
+    self.rel_base = 0
+    self.halted = False
+
+  def reset(self):
+    self[:] = self.orig_program
+    self.ip = 0
+    self.input = []
     self.output = []
     self.rel_base = 0
     self.halted = False
@@ -53,7 +62,7 @@ class Intcode(list):
       return super().__getitem__(index)
 
   def __setitem__(self, index, value):
-    if index >= len(self):
+    if not isinstance(index, slice) and index >= len(self):
       self.extend([0] * (index - len(self) + 1))
     super().__setitem__(index, value)
 
