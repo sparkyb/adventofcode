@@ -1,3 +1,4 @@
+import collections
 from collections import defaultdict
 import enum
 import functools
@@ -16,7 +17,7 @@ def get_input(filename=None):
   if not filename:
     filename = os.path.splitext(os.path.basename(__file__))[0] + '.txt'
   with open(filename) as fp:
-    input = fp.read().rstrip()
+    input = fp.read().rstrip('\n')
 
   return input.split('\n')
 
