@@ -18,16 +18,22 @@ def get_input(filename=None):
   with open(filename) as fp:
     input = fp.read().rstrip('\n')
 
-  #return list(map(int, input.split(',')))
-  return input.split('\n')
+  return list(map(int, input.split('\n')))
 
 
 def part1(input):
-  return None
+  for i, a in enumerate(input):
+    for b in input[i + 1:]:
+      if a + b == 2020:
+        return a * b
 
 
 def part2(input):
-  return None
+  for i, a in enumerate(input):
+    for j, b in enumerate(input[i + 1:], start=i + 1):
+      for c in input[j + 1:]:
+        if a + b + c == 2020:
+          return a * b * c
 
 
 if __name__ == '__main__':
