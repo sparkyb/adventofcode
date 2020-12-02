@@ -1,3 +1,4 @@
+import bisect
 import collections
 from collections import defaultdict
 import enum
@@ -22,18 +23,27 @@ def get_input(filename=None):
 
 
 def part1(input):
-  for i, a in enumerate(input):
-    for b in input[i + 1:]:
-      if a + b == 2020:
-        return a * b
+  input.sort()
+  for a_index in range(len(input) - 1):
+    a = input[a_index]
+    b = 2020 - a
+    b_index = bisect.bisect_left(input, b, a_index)
+    if b_index != len(input) and input[b_index] == b:
+      return a * b
 
 
 def part2(input):
-  for i, a in enumerate(input):
-    for j, b in enumerate(input[i + 1:], start=i + 1):
-      for c in input[j + 1:]:
-        if a + b + c == 2020:
-          return a * b * c
+  input.sort()
+  for a_index in range(len(input) - 2):
+    a = input[a_index]
+    for b_index in range(a_index + 1, len(input) - 1):
+      b = input[b_index]
+      if a + b >= 2020:
+        break
+      c = 2020 - a - b
+      c_index = bisect.bisect_left(input, c, b_index + 1)
+      if c_index != len(input) and input[c_index] == c:
+        return a * b * c
 
 
 if __name__ == '__main__':
