@@ -18,19 +18,8 @@ def get_input(filename=None):
   with open(filename) as fp:
     input = fp.read().rstrip('\n')
 
-  records = []
-  record = {}
-  for line in input.split('\n'):
-    if not line:
-      records.append(record)
-      record = {}
-    else:
-      for field in line.split(' '):
-        k, v = field.split(':')
-        record[k] = v
-  if record:
-    records.append(record)
-  return records
+  return [dict(field.split(':') for field in record.split())
+          for record in input.split('\n\n')]
 
 
 FIELD_VALIDATION = {
