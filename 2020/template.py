@@ -5,6 +5,7 @@ import functools
 import itertools
 import math
 import msvcrt
+import operator
 import os.path
 import re
 import sys
@@ -18,7 +19,6 @@ def get_input(filename=None):
   with open(filename) as fp:
     input = fp.read().rstrip('\n')
 
-  #return list(map(int, input.split(',')))
   return input.split('\n')
 
 
