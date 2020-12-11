@@ -10,7 +10,7 @@ import os.path
 import re
 import sys
 
-import numpy as np
+#import numpy as np
 
 
 def get_input(filename=None):
@@ -19,7 +19,11 @@ def get_input(filename=None):
   with open(filename) as fp:
     input = fp.read().rstrip('\n')
 
-  return np.array([list(line) for line in input.split('\n')])
+  return {(y, x): c == '#' for y, line in enumerate(input.split('\n'))
+          for x, c in enumerate(line) if c != '.'}
+
+
+DIRS = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
 
 
 class Done(Exception):
@@ -28,16 +32,14 @@ class Done(Exception):
 
 def step1(prev):
   changed = False
-  next = np.copy(prev)
-  padded = np.pad(prev, ((1, 1), (1, 1)), constant_values='.')
-  for y, x in np.argwhere(prev != '.'):
-    count = np.count_nonzero(padded[y:y + 3, x:x + 3] == '#')
-    if prev[y, x] == 'L' and count == 0:
+  next = {}
+  for y, x in prev:
+    count = sum(prev.get((y + dy, x + dx), False) for dy, dx in DIRS)
+    if (count >= 4) if prev[(y, x)] else (count == 0):
       changed = True
-      next[y, x] = '#'
-    elif prev[y, x] == '#' and count >= 5:
-      changed = True
-      next[y, x] = 'L'
+      next[(y, x)] = not prev[(y, x)]
+    else:
+      next[(y, x)] = prev[(y, x)]
   if changed:
     return next
   else:
@@ -46,38 +48,36 @@ def step1(prev):
 
 def part1(input):
   while True:
-    ## print('\n'.join(''.join(line) for line in input))
-    ## print()
-    ## msvcrt.getch()
     try:
       input = step1(input)
     except Done:
-      return np.count_nonzero(input == '#')
+      return sum(input.values())
 
 
 def step2(prev):
   changed = False
-  next = np.copy(prev)
-  for y, x in np.argwhere(prev != '.'):
+  next = {}
+  max_y, max_x = functools.reduce(
+      lambda k, max_k: tuple(map(max, zip(k, max_k))),
+      prev.keys(),
+      (0, 0))
+  for y, x in prev:
     count = 0
-    for dy, dx in np.nditer(np.ogrid[-1:2, -1:2]):
-      if dy == 0 and dx == 0:
-        continue
+    for dy, dx in DIRS:
       y2, x2 = y + dy, x + dx
-      while 0 <= y2 < prev.shape[0] and 0 <= x2 < prev.shape[1]:
-        if prev[y2, x2] != '.':
-          count += prev[y2, x2] == '#'
+      while 0 <= y2 <= max_y and 0 <= x2 <= max_x:
+        if (y2, x2) in prev:
+          count += prev[(y2, x2)]
           break
         y2 += dy
         x2 += dx
-      if prev[y, x] == 'L' and count or count >= 5:
+      if (count >= 5) if prev[(y, x)] else count:
         break
-    if prev[y, x] == 'L' and count == 0:
+    if (count >= 5) if prev[(y, x)] else (count == 0):
       changed = True
-      next[y, x] = '#'
-    elif prev[y, x] == '#' and count >= 5:
-      changed = True
-      next[y, x] = 'L'
+      next[(y, x)] = not prev[(y, x)]
+    else:
+      next[(y, x)] = prev[(y, x)]
   if changed:
     return next
   else:
@@ -86,13 +86,10 @@ def step2(prev):
 
 def part2(input):
   while True:
-    ## print('\n'.join(''.join(line) for line in input))
-    ## print()
-    ## msvcrt.getch()
     try:
       input = step2(input)
     except Done:
-      return np.count_nonzero(input == '#')
+      return sum(input.values())
 
 
 if __name__ == '__main__':
