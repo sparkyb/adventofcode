@@ -10,7 +10,7 @@ import os.path
 import re
 import sys
 
-import numpy as np
+#import numpy as np
 
 
 def get_input(filename=None):
@@ -19,38 +19,40 @@ def get_input(filename=None):
   with open(filename) as fp:
     input = fp.read().rstrip('\n')
 
-  return np.array([[[c == '#' for c in line] for line in input.split('\n')]])
+  return {(x, y, 0) for y, line in enumerate(input.split('\n'))
+          for x, c in enumerate(line) if c == '#'}
 
 
-def neighbors(input, index):
-  active = all(0 <= i < s for i, s in zip(index, input.shape)) and input[index]
-  return active, np.count_nonzero(
-      input[tuple(slice(max(i - 1, 0), min(i + 2, s))
-                  for i, s in zip(index, input.shape))]) - active
+def neighbors(active, index):
+  return sum(
+      index2 in active
+      for index2 in itertools.product(*(range(i - 1, i + 2) for i in index))
+      if index2 != index)
 
 
 def step(input):
-  output = np.full([d + 2 for d in input.shape], False)
-  for index in np.ndindex(*output.shape):
-    active, n = neighbors(input, tuple(i - 1 for i in index))
-    if active:
-      output[index] = 2 <= n <= 3
-    else:
-      output[index] = n == 3
-  return output[tuple(slice(min(c), max(c) + 1) for c in np.nonzero(output))]
+  output = set()
+  return {
+      index
+      for index in itertools.product(
+          *(range(min(c) - 1, max(c) + 2) for c in zip(*input)))
+      if (2 <= neighbors(input, index) <= 3 if index in input
+          else neighbors(input, index) == 3)
+  }
 
 
 def part1(input):
+  active = input
   for i in range(6):
-    input = step(input)
-  return np.count_nonzero(input)
+    active = step(active)
+  return len(active)
 
 
 def part2(input):
-  input = input[np.newaxis, ...]
+  active = {index + (0,) for index in input}
   for i in range(6):
-    input = step(input)
-  return np.count_nonzero(input)
+    active = step(active)
+  return len(active)
 
 
 if __name__ == '__main__':
