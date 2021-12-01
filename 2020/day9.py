@@ -24,26 +24,24 @@ def get_input(filename=None):
 
 def part1(input):
   for i in range(25, len(input)):
-    for a in range(i - 25, i):
-      for b in range(a, i):
-        if input[a] + input[b] == input[i]:
-          break
-      else:
-        continue
-      break
+    for a, b in itertools.combinations(input[i - 25:i], 2):
+      if a + b == input[i]:
+        break
     else:
       return input[i]
 
 
 def part2(input):
   target = part1(input)
-  for i in range(0, len(input)):
-    for l in range(2, len(input) - i + 1):
-      s = sum(input[i:i + l])
-      if s == target:
-        return min(input[i:i + l]) + max(input[i:i + l])
-      elif s > target:
-        break
+  a = b = s = 0
+  while s != target:
+    if s < target:
+      s += input[b]
+      b += 1
+    else:
+      s -= input[a]
+      a += 1
+  return min(input[a:b]) + max(input[a:b])
 
 
 if __name__ == '__main__':

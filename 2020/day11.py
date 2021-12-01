@@ -23,9 +23,6 @@ def get_input(filename=None):
           for x, c in enumerate(line) if c != '.'}
 
 
-DIRS = [(-1, -1), (-1, 0), (-1, 1), (0, -1), (0, 1), (1, -1), (1, 0), (1, 1)]
-
-
 class Done(Exception):
   pass
 
@@ -34,8 +31,9 @@ def step1(prev):
   changed = False
   next = {}
   for y, x in prev:
-    count = sum(prev.get((y + dy, x + dx), False) for dy, dx in DIRS)
-    if (count >= 4) if prev[(y, x)] else (count == 0):
+    count = sum(prev.get((y + dy, x + dx), False)
+                for dy, dx in itertools.product((-1, 0, 1), repeat=2))
+    if (count >= 5) if prev[(y, x)] else (count == 0):
       changed = True
       next[(y, x)] = not prev[(y, x)]
     else:
@@ -63,7 +61,8 @@ def step2(prev):
       (0, 0))
   for y, x in prev:
     count = 0
-    for dy, dx in DIRS:
+    for dy, dx in itertools.product((-1, 0, 1), repeat=2):
+      if dy == 0 and dx == 0: continue
       y2, x2 = y + dy, x + dx
       while 0 <= y2 <= max_y and 0 <= x2 <= max_x:
         if (y2, x2) in prev:
