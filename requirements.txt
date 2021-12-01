@@ -1,2 +1,4 @@
+python-dotenv
 numpy
+requests
 z3
