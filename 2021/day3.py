@@ -45,7 +45,7 @@ def part2(input):
     while len(numbers) > 1:
       count = sum((number[i] == '1') * 2 - 1 for number in numbers)
       numbers = set(number for number in numbers
-                    if number[i] == '01'[count >= 0 if highest else count < 0])
+                    if number[i] == '01'[(count < 0) ^ highest])
       i += 1
     assert len(numbers) == 1
     return int(list(numbers)[0], 2)

@@ -1,20 +1,6 @@
 CREATE TABLE input (n INTEGER);
 
-WITH RECURSIVE
-  input_lines(line, rest) AS (
-    VALUES('', readfile('day1.txt')||CHAR(10))
-    UNION ALL
-    SELECT
-      substr(rest, 1, instr(rest, CHAR(10)) - 1),
-      substr(rest, instr(rest, CHAR(10)) + 1)
-      FROM input_lines
-      WHERE instr(rest, CHAR(10))
-  )
-  INSERT INTO input
-  SELECT
-    line AS n
-  FROM input_lines
-  WHERE line != '';
+.import day1.txt input
 
 .mode line
 
