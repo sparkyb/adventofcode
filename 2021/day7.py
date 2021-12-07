@@ -10,6 +10,7 @@ import msvcrt
 import operator
 import os.path
 import re
+import statistics
 import sys
 
 #import numpy as np
@@ -24,16 +25,34 @@ def get_input(filename=None):
   return list(map(int, input.split(',')))
 
 
+def calc_fuel1(input, end):
+  return sum(abs(end - start) for start in input)
+
+
 def part1(input):
-  return min(sum(abs(end - start) for start in input)
-             for end in range(min(input), max(input) + 1))
+  ## return min(calc_fuel1(input, end)
+             ## for end in range(min(input), max(input) + 1))
+  end = int(statistics.median(input))
+  return calc_fuel1(input, end)
+
+
+def tri(dist):
+  return dist * (dist + 1) // 2
+
+
+def calc_fuel2(input, end):
+  return sum(tri(abs(end - start)) for start in input)
 
 
 def part2(input):
-  def calc_fuel(dist):
-    return dist * (dist + 1) // 2
-  return min(sum(calc_fuel(abs(end - start)) for start in input)
-             for end in range(min(input), max(input) + 1))
+  ## return min(calc_fuel2(input, end)
+             ## for end in range(min(input), max(input) + 1))
+  end = int(statistics.median(input))
+  while calc_fuel2(input, end + 1) < calc_fuel2(input, end):
+    end += 1
+  while calc_fuel2(input, end - 1) < calc_fuel2(input, end):
+    end -= 1
+  return calc_fuel2(input, end)
 
 
 if __name__ == '__main__':
