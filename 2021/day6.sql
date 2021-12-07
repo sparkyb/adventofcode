@@ -2,8 +2,6 @@ CREATE TABLE input (age INTEGER);
 .separator ' ' ','
 .import day6.txt input
 
-CREATE TABLE memoize (age INTEGER, days INTEGER, count INTEGER);
-
 .mode line
 
 WITH RECURSIVE
