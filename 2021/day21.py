@@ -44,12 +44,10 @@ def get_input(filename=None):
 
 def part1(state):
   rolls = 0
-  die = 1
+  die = itertools.cycle(range(1, 101))
   turn = 0
   while not any(player.score >= 1000 for player in state):
-    state = state.move(turn,
-                       sum((n - 1) % 100 + 1 for n in range(die, die + 3)))
-    die = (die + 3 - 1) % 100 + 1
+    state = state.move(turn, sum(next(die) for _ in range(3)))
     rolls += 3
     turn = 1 - turn
   return rolls * state[turn].score
