@@ -21,15 +21,27 @@ def get_input(filename=None):
   with open(filename) as fp:
     input = fp.read().rstrip('\n')
 
-  return input.split('\n')
+  return [line.split() for line in input.split('\n')]
 
 
 def part1(input):
-  return None
+  score = 0
+  for opponent, move in input:
+    opponent = 'ABC'.index(opponent)
+    move = 'XYZ'.index(move)
+    result = (move - opponent + 1) % 3
+    score += move + 1 + result * 3
+  return score
 
 
 def part2(input):
-  return None
+  score = 0
+  for opponent, result in input:
+    opponent = 'ABC'.index(opponent)
+    result = 'XYZ'.index(result)
+    move = (opponent + result - 1) % 3
+    score += move + 1 + result * 3
+  return score
 
 
 if __name__ == '__main__':
