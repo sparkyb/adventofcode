@@ -36,24 +36,19 @@ DIRS = {
 }
 
 
+def sign(x):
+  return (x > 0) - (x < 0)
+
+
 def move(knots, dir):
   dy, dx = DIRS[dir]
   knots[0] = (knots[0][0] + dy, knots[0][1] + dx)
   for i in range(len(knots) - 1):
     dy = knots[i][0] - knots[i + 1][0]
     dx = knots[i][1] - knots[i + 1][1]
-    if abs(dy) > 1:
-      d = abs(dy) - 1
-      dy = d * dy // abs(dy)
-      if dx:
-        dx = d * dx // abs(dx)
-    elif abs(dx) > 1:
-      d = abs(dx) - 1
-      dx = d * dx // abs(dx)
-      if dy:
-        dy = d * dy // abs(dy)
-    else:
-      dy = dx = 0
+    d = max(abs(dy), abs(dx)) - 1
+    dy = d * sign(dy)
+    dx = d * sign(dx)
     knots[i + 1] = (knots[i + 1][0] + dy, knots[i + 1][1] + dx)
 
 
