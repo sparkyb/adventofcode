@@ -2,4 +2,4 @@ pyperclip
 python-dotenv
 numpy
 requests
-z3
+z3-solver
