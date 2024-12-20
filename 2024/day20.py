@@ -55,15 +55,15 @@ def part1(input):
   start, end, walls = input
   from_start = calc_distances(start, walls)
   from_end = calc_distances(end, walls)
-  base_time = from_start[end]
+  base_dist = from_start[end]
   count = 0
   for wall in walls:
     for dir in ((-1, 0), (1, 0), (0, -1), (0, 1)):
       before = (wall[0] - dir[0], wall[1] - dir[1])
       after = (wall[0] + dir[0], wall[1] + dir[1])
       if before in from_start and after in from_end:
-        t = from_start[before] + from_end[after] + 2
-        if base_time - t >= 100:
+        dist = from_start[before] + from_end[after] + 2
+        if base_dist - dist >= 100:
           count += 1
   return count
 
@@ -72,21 +72,28 @@ def part2(input):
   start, end, walls = input
   from_start = calc_distances(start, walls)
   from_end = calc_distances(end, walls)
-  base_time = from_start[end]
-  from_start_sorted =sorted((dist, pos) for pos, dist in from_start.items()
-                            if from_end[pos] > 100)
-  from_end_sorted =sorted((dist, pos) for pos, dist in from_end.items()
-                          if from_start[pos] > 100)
+  base_dist = from_start[end]
+  deltas = {}
+  frontier = [(0, (0, 0))]
+  while frontier:
+    dist, pos = heapq.heappop(frontier)
+    if pos in deltas:
+      continue
+    deltas[pos] = dist
+    for dir in ((-1, 0), (1, 0), (0, -1), (0, 1)):
+      new_pos = (pos[0] + dir[0], pos[1] + dir[1])
+      if new_pos not in deltas and dist < 20:
+        heapq.heappush(frontier, (dist + 1, new_pos))
   count = 0
-  for before_dist, before in from_start_sorted:
-    for after_dist, after in from_end_sorted:
-      if base_time - before_dist - after_dist <= 100:
-        break
-      between = abs(after[0] - before[0]) + abs(after[1] - before[1])
-      if between > 20:
+  for before, before_dist in from_start.items():
+    if from_end[before] <= 100:
+      continue
+    for delta, between_dist in deltas.items():
+      after = (before[0] + delta[0], before[1] + delta[1])
+      if after not in from_end:
         continue
-      t = before_dist + after_dist + between
-      if base_time - t >= 100:
+      dist = before_dist + between_dist + from_end[after]
+      if base_dist - dist >= 100:
         count += 1
   return count
 

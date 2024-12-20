@@ -76,7 +76,7 @@ def part2(input):
         if ((next_pos, dir) not in scores or
             scores[(next_pos, dir)] >= next_score):
           scores[(next_pos, dir)] = next_score
-          heapq.heappush(frontier, (next_score, path +(next_pos,), dir))
+          heapq.heappush(frontier, (next_score, path + (next_pos,), dir))
       dir = (-dir[1], dir[0])
   return len(on_path)
 
