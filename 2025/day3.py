@@ -1,6 +1,5 @@
 #!/usr/bin/env python
 
-import itertools
 import os.path
 
 
@@ -10,34 +9,25 @@ def get_input(filename=None):
   with open(filename) as fp:
     input = fp.read().rstrip("\n")
 
-  return [
-    int(line[1:]) * ((line[0] == "R") * 2 - 1) for line in input.split("\n")
-  ]
+  return [tuple(map(int, bank)) for bank in input.split("\n")]
+
+
+def joltage(bank, digits=2):
+  ret = 0
+  start = 0
+  for i in range(digits - 1, -1, -1):
+    d = max(bank[start : len(bank) - i])
+    ret += d * pow(10, i)
+    start = bank.index(d, start) + 1
+  return ret
 
 
 def part1(input):
-  def modsum(acc, delta):
-    return (acc + delta) % 100
-
-  nums = itertools.accumulate(input, modsum, initial=50)
-  return sum(num == 0 for num in nums)
+  return sum(joltage(bank) for bank in input)
 
 
 def part2(input):
-  count = 0
-  prev = 50
-  for delta in input:
-    num = prev + delta
-    diff = max(prev, num) - min(prev, num)
-    count += diff // 100  # full rotations
-    diff %= 100
-    count += (
-      (min(prev, num) % 100) + diff
-    ) > 100  # partial rotation crosses 100
-    prev = num % 100
-    if diff:
-      count += prev == 0  # lands on 100
-  return count
+  return sum(joltage(bank, 12) for bank in input)
 
 
 if __name__ == "__main__":
