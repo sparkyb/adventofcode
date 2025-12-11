@@ -1,7 +1,6 @@
 #!/usr/bin/env python
 
 import collections
-from collections import defaultdict
 import enum
 import functools
 import itertools
@@ -10,9 +9,6 @@ import msvcrt
 import operator
 import os.path
 import re
-import sys
-
-# import numpy as np
 
 
 def get_input(filename=None):

@@ -1,14 +1,8 @@
 #!/usr/bin/env python
 
 import collections
-import enum
 import functools
-import itertools
-import math
-import msvcrt
-import operator
 import os.path
-import re
 
 
 def get_input(filename=None):
@@ -17,15 +11,34 @@ def get_input(filename=None):
   with open(filename) as fp:
     input = fp.read().rstrip("\n")
 
-  return input.split("\n")
+  connections = collections.defaultdict(set)
+  for line in input.split("\n"):
+    machine, outputs = line.split(": ")
+    connections[machine].update(outputs.split(" "))
+  return connections
 
 
 def part1(input):
-  return None
+  @functools.cache
+  def count_paths(start):
+    if start == "out":
+      return 1
+    return sum(count_paths(next) for next in input[start])
+
+  return count_paths("you")
 
 
 def part2(input):
-  return None
+  @functools.cache
+  def count_paths(start, fft=False, dac=False):
+    if start == "out":
+      return 1 if fft and dac else 0
+    return sum(
+      count_paths(next, fft=fft or start == "fft", dac=dac or start == "dac")
+      for next in input[start]
+    )
+
+  return count_paths("svr")
 
 
 if __name__ == "__main__":
